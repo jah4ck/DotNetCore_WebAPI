@@ -1,0 +1,42 @@
+﻿@model DotNetCore_WebAPI.web.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form asp-controller="Home" asp-action="Rechercher" asp-antiforgery="true">
+
+    <input asp-for="Base" />
+    <input asp-for="Text" />
+
+    <input type="submit" />
+
+</form>
+
+@if (Model != null)
+{
+
+    @if (Model.resultPresenceTexte.LstResult != null)
+    {
+        @if (Model.resultPresenceTexte.LstResult.Count() > 0)
+        {
+            <table>
+                @foreach (var item in Model.resultPresenceTexte.LstResult)
+                {
+                    <tr>
+                        <td>@item.ProcName</td>
+                        <td>@item.Extrait</td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>Aucun résultat</p>
+        }
+
+    }
+    else if (Model.resultPresenceTexte != null)
+    {
+        <p>@Model.resultPresenceTexte.ReturnMessage</p>
+    }
+}
