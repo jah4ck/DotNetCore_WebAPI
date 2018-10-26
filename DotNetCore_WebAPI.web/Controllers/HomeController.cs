@@ -17,9 +17,11 @@ namespace DotNetCore_WebAPI.web.Controllers
 
         //initialisation du manager
         private readonly IRechercheTextManager _rechercheTextManager;
-        public HomeController(IRechercheTextManager rechercheTextManager)
+        private readonly ITokenManager _tokenManager;
+        public HomeController(IRechercheTextManager rechercheTextManager, ITokenManager tokenManager)
         {
             _rechercheTextManager = rechercheTextManager;
+            _tokenManager = tokenManager;
         }
 
         public async Task<IActionResult> Index(HomeViewModel vm)
@@ -50,7 +52,6 @@ namespace DotNetCore_WebAPI.web.Controllers
                 Bdd = vm.Base,
                 Text = vm.Text
             };
-
             //appel du ws
             result = await _rechercheTextManager.GetText(presenceTexte);
 
@@ -58,6 +59,21 @@ namespace DotNetCore_WebAPI.web.Controllers
 
             //retourne les data à la vue
             return View("Index", vm);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<JsonResult> Token(string username, string password)
+        {
+            TaskResult<UserToken> result = new TaskResult<UserToken>();
+            UserToken userToken = new UserToken
+            {
+                username = username,
+                password = password
+            };
+            result = await _tokenManager.GetToken(userToken);
+
+            return Json(new { result });
         }
 
         public IActionResult About()

@@ -28,5 +28,7 @@ namespace DotNetCore_WebAPI.web.Models
         /// contient la liste des résultats
         /// </summary>
         public IList<PresenceTexte> lstTextResult { get; set; }
+
+        public string SecurityToken { get; set; }
     }
 }

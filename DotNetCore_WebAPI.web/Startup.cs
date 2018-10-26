@@ -27,6 +27,8 @@ namespace DotNetCore_WebAPI.web
         public void ConfigureServices(IServiceCollection services)
         {
             //penser à faire le mapping pour .net core uniquement
+            services.AddTransient<ITokenManager, TokenManager>();
+            services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<IRechercheTextManager, RechercheTextManager>();
             services.AddTransient<IRechercheTextRepository, RechercheTextRepository>();
             services.Configure<MySettingsUrlModel>(Configuration.GetSection("MySettings"));

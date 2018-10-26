@@ -3,12 +3,12 @@
     ViewData["Title"] = "Home Page";
 }
 
-<form asp-controller="Home" asp-action="Rechercher" asp-antiforgery="true">
+<form asp-controller="Home" asp-action="Rechercher"  onsubmit="TakeToken();" asp-antiforgery="true">
 
     <input asp-for="Base" />
     <input asp-for="Text" />
-
-    <input type="submit" />
+    <input type="hidden" value="" id="SecurityToken" name="SecurityToken" />
+    <input type="submit" id="valider"/>
 
 </form>
 
@@ -39,8 +39,119 @@
     {
         <p>@Model.resultPresenceTexte.ReturnMessage</p>
         if (!Model.resultPresenceTexte.IsSuccess)
-	    {
+        {
             <p>@Model.resultPresenceTexte.Exception.InnerException</p>
-	    }
+        }
     }
 }
+
+<div style="margin: 50px auto; width:600px;">
+    <div id="btLoginContainer">
+        <input type="text" name="username" id="username" placeholder="Username" />
+        <input type="password" name="password" id="password" placeholder="Password" />
+        <button id="btLogin">Login</button><br>
+        <label>(Use the same password as the username to sign in)</label>
+    </div>
+    <div id="btLogoutContainer">
+        <button id="btLogout">Logout</button>
+    </div>
+    <div>
+        <label>Action that requires the user to be authenticated: </label><button id="btGetUserDetails">Get User Details</button>
+    </div>
+
+</div>
+<div style="margin: 50px; background: lightgray" id="responseContainer">
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="~/lib/Microsoft.jQuery.Unobtrusive.Ajax/jquery.unobtrusive-ajax.min.js"></script>
+
+<script>
+
+    function TakeToken() {
+        $('input[name="SecurityToken"]').val(getSavedToken());
+        true;
+    }
+
+          function handleError(xhr, textStatus, errorThrown){
+              if (xhr.status == 401)
+                $('#responseContainer').html("Unauthorized request");
+              else{
+                var message = "<p>Status code: " + xhr.status + "</p>";
+                message += "<pre>" + xhr.responseText + "</pre>";
+                $('#responseContainer').html(message);
+              }
+          }
+
+          function isUserLoggedIn(){
+              return localStorage.getItem("token") !== null;
+          }
+
+          function getSavedToken() {
+              return localStorage.getItem("token");
+          }
+
+          $.ajaxSetup({
+              beforeSend: function(xhr) {
+                  if (isUserLoggedIn()) {
+                      xhr.setRequestHeader('Authorization', 'Bearer ' + getSavedToken());
+                  }
+                  
+              }
+          });
+
+    $(function () {
+        
+              $('#btLogin').click(function() {
+                  var token = $('input[name="__RequestVerificationToken"]').val(); //récûpération du token
+                  $.ajax({
+                      url: '@Url.Action("Token")',//appel de la method get AdresseTableau
+                      type: 'POST',
+                      data: {
+                          __RequestVerificationToken: token,
+                          username: $('#username').val(),
+                          password: $('#password').val()
+                      },
+                      dataType: 'html',
+                      success: function (e) {
+                          var obj = JSON.parse(e);
+                          var valuetoken = obj.result.Result.token;
+                          localStorage.setItem("token", valuetoken);
+                          $('#btLoginContainer').hide();
+                          $('#btLogoutContainer').show();
+                          var message = "<p>Token received and saved in local storage under the key 'token'</p>";
+                          message += "<p>Token Value: </p><p style='word-wrap:break-word'>" + e.Result.token + "</p>";
+                          $('#responseContainer').html(message);
+                      }
+                  });
+              });
+
+              $('#btLogout').click(function(){
+                  localStorage.removeItem("token");
+                  $('#btLogoutContainer').hide();
+                  $('#btLoginContainer').show();
+                  $('#responseContainer').html("<p>Token deleted from local storage</p>");
+              });
+
+
+        $('#btGetUserDetails').click(function () {
+            $('input[name="SecurityToken"]').val('000000');
+                  //$.get("/home/getuserdetails").done(function(userDetails){
+                     // $('#responseContainer').html("<pre>" + JSON.stringify(userDetails) + "</pre>");
+                  //}).fail(handleError);
+              });
+
+
+              if (isUserLoggedIn()){
+                  $('#btLoginContainer').hide();
+                  $('#btLogoutContainer').show();
+              }else {
+                  $('#btLoginContainer').show();
+                  $('#btLogoutContainer').hide();
+              }
+          });
+</script>
