@@ -38,5 +38,9 @@
     else if (Model.resultPresenceTexte != null)
     {
         <p>@Model.resultPresenceTexte.ReturnMessage</p>
+        if (!Model.resultPresenceTexte.IsSuccess)
+	    {
+            <p>@Model.resultPresenceTexte.Exception.InnerException</p>
+	    }
     }
 }

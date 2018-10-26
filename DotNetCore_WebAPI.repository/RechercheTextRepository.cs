@@ -18,10 +18,6 @@ namespace DotNetCore_WebAPI.repository
         //permet de spécifier la connexion de cette classe 
         // on va donc allé chercher les info dans le fichier appsetting.json
 
-        //public RechercheTextRepository(IConfiguration config) : base(config)
-        //{
-        //    config.GetConnectionString("DefaultConnection");
-        //}
         private readonly IOptions<MySettingsUrlModel> appSettings;
         public RechercheTextRepository(IOptions<MySettingsUrlModel> app) : base(new Uri(app.Value.WebApiBaseUrl))
         {
@@ -32,27 +28,6 @@ namespace DotNetCore_WebAPI.repository
         public async Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model)
         {
             TaskResult<PresenceTexte> taskResult = new TaskResult<PresenceTexte>();
-            //try
-            //{
-            //    await WithConnection(async c =>
-            //    {
-            //        DynamicParameters parameters = new DynamicParameters();
-            //        parameters.Add("db", bdd); //le nom des paramètres de la proc
-            //        parameters.Add("text", texte);
-            //        taskResult.LstResult = await c.QueryAsync<PresenceTexte>("SRP.dbo.ps_help_text", parameters, null, 6000, commandType: CommandType.StoredProcedure);
-            //        taskResult.IsSuccess = taskResult.LstResult != null ? true : false;
-            //        return taskResult;
-            //    });
-            //    return taskResult;
-            //}
-            //catch (Exception ex)
-            //{
-            //    taskResult.Exception = ex;
-            //    taskResult.ReturnMessage = "Erreur lors de la récupération des données";
-            //    taskResult.IsSuccess = false;
-            //    return taskResult;
-            //}
-
             try
             {
                 var requestUrl = CreateRequestUri(string.Format(System.Globalization.CultureInfo.InvariantCulture,

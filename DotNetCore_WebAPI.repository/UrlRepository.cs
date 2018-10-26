@@ -21,11 +21,30 @@ namespace DotNetCore_WebAPI.repository
 
         protected async Task<T> GetAsync<T>(Uri requestUrl)
         {
-            addHeaders();
-            var response = await _httpClient.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead);
-            response.EnsureSuccessStatusCode();
-            var data = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(data);
+            try
+            {
+                addHeaders();
+                var response = await _httpClient.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(data);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception(String.Format("{0}.GetAsync() experienced a url timeout", GetType().FullName), ex);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception(String.Format("{0}.GetAsync() HttpRequestException", GetType().FullName), ex);
+            }
+            catch (UriFormatException ex)
+            {
+                throw new Exception(String.Format("{0}.GetAsync() UriFormatException", GetType().FullName), ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(String.Format("{0}.GetAsync() Exception (not a timeout)", GetType().FullName), ex);
+            }
         }
 
         /// <summary>  
@@ -61,18 +80,39 @@ namespace DotNetCore_WebAPI.repository
         }
         protected async Task<TaskResult<T1>> PostAsync<T1, T2>(Uri requestUrl, T2 content)
         {
-            addHeaders();
-            var response = await _httpClient.PostAsync(requestUrl.ToString(), CreateHttpContent<T2>(content));
-            response.EnsureSuccessStatusCode();
-            var data = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<TaskResult<T1>>(data);
+            try
+            {
+                addHeaders();
+                var response = await _httpClient.PostAsync(requestUrl.ToString(), CreateHttpContent<T2>(content));
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TaskResult<T1>>(data);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception(String.Format("{0}.PostAsync() experienced a url timeout", GetType().FullName), ex);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception(String.Format("{0}.PostAsync() HttpRequestException", GetType().FullName), ex);
+            }
+            catch (UriFormatException ex)
+            {
+                throw new Exception(String.Format("{0}.PostAsync() UriFormatException", GetType().FullName), ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(String.Format("{0}.PostAsync() Exception (not a timeout)", GetType().FullName), ex);
+            }
         }
 
         protected Uri CreateRequestUri(string relativePath, string queryString = "")
         {
             var endpoint = new Uri(BaseEndpoint, relativePath);
-            var uriBuilder = new UriBuilder(endpoint);
-            uriBuilder.Query = queryString;
+            var uriBuilder = new UriBuilder(endpoint)
+            {
+                Query = queryString
+            };
             return uriBuilder.Uri;
         }
 
