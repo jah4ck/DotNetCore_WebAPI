@@ -16,7 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DotNetCore_WebAPI.business.interface\DotNetCore_WebAPI.business.Interface.csproj" />
     <ProjectReference Include="..\DotNetCore_WebAPI.business\DotNetCore_WebAPI.business.csproj" />
-    <ProjectReference Include="..\DotNetCore_WebAPI.CoreApiClient\DotNetCore_WebAPI.CoreApiClient.csproj" />
     <ProjectReference Include="..\DotNetCore_WebAPI.entities\DotNetCore_WebAPI.entities.csproj" />
     <ProjectReference Include="..\DotNetCore_WebAPI.repository.interface\DotNetCore_WebAPI.repository.Interface.csproj" />
     <ProjectReference Include="..\DotNetCore_WebAPI.repository\DotNetCore_WebAPI.repository.csproj" />
