@@ -53,7 +53,7 @@ namespace DotNetCore_WebAPI.web.Controllers
                 Text = vm.Text
             };
             //appel du ws
-            result = await _rechercheTextManager.GetText(presenceTexte);
+            result = await _rechercheTextManager.GetText(presenceTexte, vm.SecurityToken);
 
             vm.resultPresenceTexte = result;
 

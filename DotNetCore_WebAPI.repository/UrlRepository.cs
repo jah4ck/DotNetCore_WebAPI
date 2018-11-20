@@ -19,11 +19,11 @@ namespace DotNetCore_WebAPI.repository
             _httpClient = new HttpClient();
         }
 
-        protected async Task<T> GetAsync<T>(Uri requestUrl)
+        protected async Task<T> GetAsync<T>(Uri requestUrl, string token)
         {
             try
             {
-                addHeaders();
+                addHeaders(token);
                 var response = await _httpClient.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead);
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
@@ -50,11 +50,11 @@ namespace DotNetCore_WebAPI.repository
         /// <summary>  
         /// Common method for making POST calls  
         /// </summary>  
-        protected async Task<TaskResult<T>> PostAsync<T>(Uri requestUrl, T content)
+        protected async Task<TaskResult<T>> PostAsync<T>(Uri requestUrl, T content, string token)
         {
             try
             {
-                addHeaders();
+                addHeaders(token);
                 var response = await _httpClient.PostAsync(requestUrl.ToString(), CreateHttpContent<T>(content));
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
@@ -78,11 +78,11 @@ namespace DotNetCore_WebAPI.repository
             }
             
         }
-        protected async Task<TaskResult<T1>> PostAsync<T1, T2>(Uri requestUrl, T2 content)
+        protected async Task<TaskResult<T1>> PostAsync<T1, T2>(Uri requestUrl, T2 content, string token)
         {
             try
             {
-                addHeaders();
+                addHeaders(token);
                 var response = await _httpClient.PostAsync(requestUrl.ToString(), CreateHttpContent<T2>(content));
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
@@ -133,10 +133,10 @@ namespace DotNetCore_WebAPI.repository
             }
         }
 
-        protected void addHeaders()
+        protected void addHeaders(string token)
         {
-            _httpClient.DefaultRequestHeaders.Remove("userIP");
-            _httpClient.DefaultRequestHeaders.Add("userIP", "192.168.1.1");
+            _httpClient.DefaultRequestHeaders.Remove("Authorization");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         }
 
     }

@@ -24,7 +24,7 @@ namespace DotNetCore_WebAPI.repository
             {
                 var requestUrl = CreateRequestUri(string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "Token/Create"));
-                return await PostAsync<UserToken>(requestUrl, userToken);
+                return await PostAsync<UserToken>(requestUrl, userToken, null);
             }
             catch (Exception ex)
             {

@@ -17,7 +17,7 @@ namespace DotNetCore_WebAPI.business
             _rechercheTextRepository = rechercheTextRepository;
         }
 
-        public async Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model)
+        public async Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model, string token)
         {
             TaskResult<PresenceTexte> result = new TaskResult<PresenceTexte>();
             //test des règles de gestion 
@@ -26,7 +26,7 @@ namespace DotNetCore_WebAPI.business
             if (result.Authorize)
             {
                 //on effectue donc l'action en bdd (ou autre)
-                return await _rechercheTextRepository.GetText(model);
+                return await _rechercheTextRepository.GetText(model, token);
             }
 
             return result;

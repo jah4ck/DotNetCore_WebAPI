@@ -8,6 +8,6 @@ namespace DotNetCore_WebAPI.business.Interface
 {
     public interface IRechercheTextManager
     {
-        Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model);
+        Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model, string token);
     }
 }

@@ -25,14 +25,14 @@ namespace DotNetCore_WebAPI.repository
         }
 
 
-        public async Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model)
+        public async Task<TaskResult<PresenceTexte>> GetText(PresenceTexte model, string token)
         {
             TaskResult<PresenceTexte> taskResult = new TaskResult<PresenceTexte>();
             try
             {
                 var requestUrl = CreateRequestUri(string.Format(System.Globalization.CultureInfo.InvariantCulture,
                 "values/Rechercher"));
-                return await PostAsync<PresenceTexte>(requestUrl, model);
+                return await PostAsync<PresenceTexte>(requestUrl, model, token);
             }
             catch (Exception ex)
             {
