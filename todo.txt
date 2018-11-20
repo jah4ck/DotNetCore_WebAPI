@@ -1,1 +1,2 @@
-envoyer le token 
+envoyer le token ok 
+pb avec refacto du js
