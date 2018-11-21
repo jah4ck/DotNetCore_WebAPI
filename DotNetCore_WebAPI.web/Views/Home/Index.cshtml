@@ -69,5 +69,50 @@
 @section scripts {
     <script src="~/lib/Microsoft.jQuery.Unobtrusive.Ajax/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/gestionToken.js"></script>
+    <script>
+        $(function () {
+
+    $('#btLogin').click(function () {
+        var token = $('input[name="__RequestVerificationToken"]').val(); //récûpération du token mvc
+        $.ajax({
+            url: '@Url.Action("Token")',//appel de la method get AdresseTableau
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                username: $('#username').val(),
+                password: $('#password').val()
+            },
+            dataType: 'html',
+            success: function (e) {
+                var obj = JSON.parse(e);
+                var valuetoken = obj.result.Result.token;
+                localStorage.setItem("token", valuetoken);
+                $('#btLoginContainer').hide();
+                $('#btLogoutContainer').show();
+                var message = "<p>Token received and saved in local storage under the key 'token'</p>";
+                message += "<p>Token Value: </p><p style='word-wrap:break-word'>" + valuetoken + "</p>";
+                $('#responseContainer').html(message);
+            }
+        });
+    });
+
+    $('#btLogout').click(function () {
+        localStorage.removeItem("token");
+        $('#btLogoutContainer').hide();
+        $('#btLoginContainer').show();
+        $('#responseContainer').html("<p>Token deleted from local storage</p>");
+    });
+    
+    if (isUserLoggedIn()) {
+        $('#btLoginContainer').hide();
+        $('#btLogoutContainer').show();
+    } else {
+        $('#btLoginContainer').show();
+        $('#btLogoutContainer').hide();
+    }
+});
+    </script>
+
+
 }
 
